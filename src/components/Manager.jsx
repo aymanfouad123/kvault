@@ -36,7 +36,7 @@ const Manager = () => {
       return;
     }
 
-    if (form.password.length > 19) {
+    if (form.password.length > 25) {
       alert("Password is too long!");
       return;
     }
