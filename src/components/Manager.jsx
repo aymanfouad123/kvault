@@ -31,8 +31,13 @@ const Manager = () => {
       return;
     }
 
-    if (form.password.length < 8) {
-      alert("Password must be at least 8 characters long!");
+    if (form.password.length < 5) {
+      alert("Password must be at least 4 characters long!");
+      return;
+    }
+
+    if (form.password.length > 19) {
+      alert("Password is too long!");
       return;
     }
 
@@ -144,14 +149,18 @@ const Manager = () => {
                     <td className="px-6 py-3 whitespace-nowrap">
                       {item.username}
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap font-mono relative">
-                      <div className="flex items-center">
-                        <span className="mr-8">
+                    <td className="px-6 py-3 whitespace-nowrap w-[400px]">
+                      <div className="flex items-center w-full">
+                        <span
+                          className={`flex-1 truncate ${
+                            visiblePasswords[idx] ? "font-mono" : ""
+                          }`}
+                        >
                           {visiblePasswords[idx] ? item.password : "••••••••"}
                         </span>
                         <button
                           type="button"
-                          className="absolute right-2 text-violet-400 hover:text-violet-200 transition-colors"
+                          className="ml-2 text-violet-400 hover:text-violet-200 transition-colors flex-shrink-0"
                           onClick={() => togglePasswordVisibility(idx)}
                           tabIndex={-1}
                         >
