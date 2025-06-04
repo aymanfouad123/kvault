@@ -1,12 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Manager = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({ site: "", username: "", password: "" });
+  const [passwordArray, setPasswordArray] = useState([]);
+
+  useEffect(() => {
+    let passwords = localStorage.getItem("KVAULT_PASSWORDS");
+    if (passwords) {
+      setPasswordArray(JSON.parse(passwords));
+    }
+  }, []);
 
   const savePass = () => {
-    console.log(form);
+    setPasswordArray([...passwordArray, form]);
+    localStorage.setItem(
+      "KVAULT_PASSWORDS",
+      JSON.stringify([...passwordArray, form])
+    );
+    setForm({ site: "", username: "", password: "" });
   };
 
   const handleForm = (e) => {
