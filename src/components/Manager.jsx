@@ -1,32 +1,75 @@
-import React from "react";
+import React, { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Manager = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [form, setForm] = useState({ site: "", username: "", password: "" });
+
+  const savePass = () => {
+    console.log(form);
+  };
+
+  const handleForm = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
   return (
     <div>
-      <div className="w-screen h-[calc(100vh-56px)] flex flex-col items-center mt-13 bg-gradient-to-b from-black to-violet-900/80">
-        <div className="w-full max-w-xl p-8 rounded-3xl shadow-2xl bg-zinc-900/80 backdrop-blur-md border border-zinc-700 flex flex-col items-center">
-          <div className="font-light text-3xl text-white mb-8 drop-shadow-lg text-center">
-            KVault - Your Self Hosted Password Manager
+      <div className="w-full h-[calc(100vh-56px)] mt-13 flex justify-center">
+        <div className="w-2/3 flex flex-col items-center">
+          <div className="flex flex-col font-medium text-3xl text-white mb-8 drop-shadow-lg text-center gap-1">
+            <div>
+              <span className="text-violet-50">K</span>
+              <span className="text-violet-600 font-bold">Vault</span>
+            </div>
+            <span className="font-light text-[20px]">
+              Your Self Hosted Password Manager
+            </span>
           </div>
           <div className="flex flex-col gap-6 w-full items-center">
             <input
               className="input-dark w-3/4"
+              value={form.site}
+              onChange={handleForm}
+              name="site"
               type="text"
-              placeholder="Master Password"
+              placeholder="Enter Website URL"
             />
             <div className="flex gap-4 w-full">
               <input
                 className="input-dark w-1/2"
+                value={form.username}
+                onChange={handleForm}
+                name="username"
                 type="text"
-                placeholder="Username"
+                placeholder="Enter Username"
               />
-              <input
-                className="input-dark w-1/2"
-                type="text"
-                placeholder="Password"
-              />
+              <div className="relative w-1/2">
+                <input
+                  className="input-dark w-full pr-10"
+                  value={form.password}
+                  name="password"
+                  onChange={handleForm}
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter Password"
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-3 flex items-center text-violet-400 hover:text-violet-200"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  tabIndex={-1}
+                >
+                  {showPassword ? <FaEye /> : <FaEyeSlash />}
+                </button>
+              </div>
             </div>
           </div>
+          <button
+            onClick={savePass}
+            className="mt-6 w-1/2 py-2 rounded-lg bg-violet-600 hover:bg-violet-700 text-white font-light shadow-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2"
+          >
+            Add Password
+          </button>
         </div>
       </div>
     </div>
