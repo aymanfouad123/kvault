@@ -5,7 +5,7 @@ const Manager = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({ site: "", username: "", password: "" });
   const [passwordArray, setPasswordArray] = useState([]);
-  const [visiblePasswords, setVisiblePasswords] = useState({}); // Track visible passwords by index
+  const [visiblePasswords, setVisiblePasswords] = useState({});
 
   useEffect(() => {
     let passwords = localStorage.getItem("KVAULT_PASSWORDS");
@@ -15,6 +15,27 @@ const Manager = () => {
   }, []);
 
   const savePass = () => {
+    if (!form.site.trim() || !form.username.trim() || !form.password.trim()) {
+      alert("All fields are required!");
+      return;
+    }
+
+    // Validation checks
+    if (form.site.trim().length < 3) {
+      alert("Website URL must be at least 3 characters long!");
+      return;
+    }
+
+    if (form.username.trim().length < 3) {
+      alert("Username must be at least 3 characters long!");
+      return;
+    }
+
+    if (form.password.length < 8) {
+      alert("Password must be at least 8 characters long!");
+      return;
+    }
+
     setPasswordArray([...passwordArray, form]);
     localStorage.setItem(
       "KVAULT_PASSWORDS",
