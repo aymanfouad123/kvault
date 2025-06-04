@@ -5,6 +5,7 @@ const Manager = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({ site: "", username: "", password: "" });
   const [passwordArray, setPasswordArray] = useState([]);
+  const [visiblePasswords, setVisiblePasswords] = useState({}); // Track visible passwords by index
 
   useEffect(() => {
     let passwords = localStorage.getItem("KVAULT_PASSWORDS");
@@ -24,6 +25,13 @@ const Manager = () => {
 
   const handleForm = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const togglePasswordVisibility = (index) => {
+    setVisiblePasswords((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
   };
 
   return (
@@ -115,8 +123,20 @@ const Manager = () => {
                     <td className="px-6 py-3 whitespace-nowrap">
                       {item.username}
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap font-mono">
-                      {item.password}
+                    <td className="px-6 py-3 whitespace-nowrap font-mono relative">
+                      <div className="flex items-center">
+                        <span className="mr-8">
+                          {visiblePasswords[idx] ? item.password : "••••••••"}
+                        </span>
+                        <button
+                          type="button"
+                          className="absolute right-2 text-violet-400 hover:text-violet-200 transition-colors"
+                          onClick={() => togglePasswordVisibility(idx)}
+                          tabIndex={-1}
+                        >
+                          {visiblePasswords[idx] ? <FaEyeSlash /> : <FaEye />}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
