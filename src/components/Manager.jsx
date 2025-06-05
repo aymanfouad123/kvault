@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { TbCopyPlus } from "react-icons/tb";
+import { ToastContainer, toast, Bounce } from "react-toastify";
 
 const Manager = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -16,6 +17,16 @@ const Manager = () => {
   }, []);
 
   const handleCopy = (text) => {
+    toast.success("Copied to Clipboard!", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      transition: Bounce,
+    });
     navigator.clipboard.writeText(text);
   };
 
@@ -67,6 +78,19 @@ const Manager = () => {
 
   return (
     <div className="w-full flex flex-col items-center justify-start py-8 px-4">
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={true}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        transition={Bounce}
+      />
       <div className="w-full max-w-4xl flex flex-col items-center">
         <div className="flex flex-col font-medium text-3xl text-white mb-8 drop-shadow-lg text-center gap-1">
           <div>
