@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { TbCopyPlus } from "react-icons/tb";
 
 const Manager = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,6 +14,10 @@ const Manager = () => {
       setPasswordArray(JSON.parse(passwords));
     }
   }, []);
+
+  const handleCopy = (text) => {
+    navigator.clipboard.writeText(text);
+  };
 
   const savePass = () => {
     if (!form.site.trim() || !form.username.trim() || !form.password.trim()) {
@@ -145,12 +150,34 @@ const Manager = () => {
                     key={idx}
                     className="odd:bg-zinc-800/60 even:bg-zinc-900/60 hover:bg-violet-950/40 transition"
                   >
-                    <td className="px-6 py-3 whitespace-nowrap">{item.site}</td>
                     <td className="px-6 py-3 whitespace-nowrap">
-                      {item.username}
+                      <div className="flex items-center gap-2 justify-between">
+                        <span className="truncate">{item.site}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(item.site)}
+                          className="text-violet-400 hover:text-violet-200 active:text-violet-300 active:scale-90 transition-colors"
+                          title="Copy"
+                        >
+                          <TbCopyPlus />
+                        </button>
+                      </div>
+                    </td>
+                    <td className="px-6 py-3 whitespace-nowrap">
+                      <div className="flex items-center gap-2 justify-between">
+                        <span className="truncate">{item.username}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(item.username)}
+                          className="text-violet-400 hover:text-violet-200 active:text-violet-300 active:scale-90 transition-colors"
+                          title="Copy"
+                        >
+                          <TbCopyPlus />
+                        </button>
+                      </div>
                     </td>
                     <td className="px-6 py-3 whitespace-nowrap w-[400px]">
-                      <div className="flex items-center w-full">
+                      <div className="flex items-center w-full gap-2">
                         <span
                           className={`flex-1 truncate ${
                             visiblePasswords[idx] ? "font-mono" : ""
@@ -163,8 +190,17 @@ const Manager = () => {
                           className="ml-2 text-violet-400 hover:text-violet-200 transition-colors flex-shrink-0"
                           onClick={() => togglePasswordVisibility(idx)}
                           tabIndex={-1}
+                          title={visiblePasswords[idx] ? "Hide" : "Show"}
                         >
                           {visiblePasswords[idx] ? <FaEyeSlash /> : <FaEye />}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(item.password)}
+                          className="text-violet-400 hover:text-violet-200 active:text-violet-300 active:scale-90 transition-colors"
+                          title="Copy"
+                        >
+                          <TbCopyPlus />
                         </button>
                       </div>
                     </td>
