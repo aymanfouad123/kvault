@@ -74,18 +74,40 @@ const Manager = () => {
       JSON.stringify([...passwordArray, { ...form, id: uuidv4() }])
     );
     setForm({ site: "", username: "", password: "" });
+    toast.success("Password Saved Successfully!", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      transition: Bounce,
+    });
   };
 
-  const deletePassword = (id) => {
+  const deletePassword = (id, suppressToast = false) => {
     setPasswordArray(passwordArray.filter((item) => item.id !== id));
     localStorage.setItem(
       "KVAULT_PASSWORDS",
       JSON.stringify(passwordArray.filter((item) => item.id !== id))
     );
+    if (!suppressToast) {
+      toast.success("Password Deleted!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
+    }
   };
 
   const editPassword = (item) => {
-    deletePassword(item.id);
+    deletePassword(item.id, true);
     setForm({
       site: item.site,
       username: item.username,
