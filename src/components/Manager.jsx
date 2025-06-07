@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaEdit } from "react-icons/fa";
 import { TbCopyPlus } from "react-icons/tb";
+import { MdDelete } from "react-icons/md";
 import { ToastContainer, toast, Bounce } from "react-toastify";
+import { v4 as uuidv4 } from "uuid";
 
 const Manager = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -57,12 +59,20 @@ const Manager = () => {
       return;
     }
 
-    setPasswordArray([...passwordArray, form]);
+    setPasswordArray([...passwordArray, { ...form, id: uuidv4() }]);
     localStorage.setItem(
       "KVAULT_PASSWORDS",
-      JSON.stringify([...passwordArray, form])
+      JSON.stringify([...passwordArray, { ...form, id: uuidv4() }])
     );
     setForm({ site: "", username: "", password: "" });
+  };
+
+  const deletePassword = (id) => {
+    setPasswordArray(passwordArray.filter((item) => item.id !== id));
+    localStorage.setItem(
+      "KVAULT_PASSWORDS",
+      JSON.stringify(passwordArray.filter((item) => item.id !== id))
+    );
   };
 
   const handleForm = (e) => {
@@ -166,6 +176,9 @@ const Manager = () => {
                   <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-violet-400">
                     Password
                   </th>
+                  <th className="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider text-violet-400">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -200,7 +213,7 @@ const Manager = () => {
                         </button>
                       </div>
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap w-[400px]">
+                    <td className="px-6 py-3 whitespace-nowrap w-[300px]">
                       <div className="flex items-center w-full gap-2">
                         <span
                           className={`flex-1 truncate ${
@@ -225,6 +238,25 @@ const Manager = () => {
                           title="Copy"
                         >
                           <TbCopyPlus />
+                        </button>
+                      </div>
+                    </td>
+                    <td className="px-6 py-3 whitespace-nowrap">
+                      <div className="flex items-center gap-2 justify-center">
+                        <button
+                          type="button"
+                          onClick={() => deletePassword(item.id)}
+                          className="text-violet-400 hover:text-violet-200 active:text-violet-300 active:scale-90 transition-colors"
+                          title="Delete"
+                        >
+                          <MdDelete />
+                        </button>
+                        <button
+                          type="button"
+                          className="text-violet-400 hover:text-violet-200 active:text-violet-300 active:scale-90 transition-colors"
+                          title="Edit"
+                        >
+                          <FaEdit />
                         </button>
                       </div>
                     </td>
