@@ -10,6 +10,7 @@ const Manager = () => {
   const [form, setForm] = useState({ site: "", username: "", password: "" });
   const [passwordArray, setPasswordArray] = useState([]);
   const [visiblePasswords, setVisiblePasswords] = useState({});
+  const [modal, setModal] = useState({ open: false, type: "", item: null });
 
   useEffect(() => {
     let passwords = localStorage.getItem("KVAULT_PASSWORDS");
@@ -30,6 +31,14 @@ const Manager = () => {
       transition: Bounce,
     });
     navigator.clipboard.writeText(text);
+  };
+
+  const handleDeletePrompt = (item) => {
+    setModal({ open: true, type: "delete", item });
+  };
+
+  const handleEditPrompt = (item) => {
+    setModal({ open: true, type: "edit", item });
   };
 
   const savePass = () => {
@@ -75,6 +84,15 @@ const Manager = () => {
     );
   };
 
+  const editPassword = (item) => {
+    deletePassword(item.id);
+    setForm({
+      site: item.site,
+      username: item.username,
+      password: item.password,
+    });
+  };
+
   const handleForm = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -88,6 +106,41 @@ const Manager = () => {
 
   return (
     <div className="w-full flex flex-col items-center justify-start py-8 px-4">
+      {modal.open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="bg-zinc-900 rounded-2xl shadow-2xl p-8 w-full max-w-sm text-center border border-violet-700">
+            <h2 className="text-xl font-semibold text-white mb-4">
+              {modal.type === "delete" ? "Delete Password?" : "Edit Password?"}
+            </h2>
+            <p className="text-zinc-300 mb-6">
+              {modal.type === "delete"
+                ? "Are you sure you want to delete this password? This action cannot be undone."
+                : "Do you want to edit this password entry?"}
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                className="px-4 py-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-white transition"
+                onClick={() => setModal({ open: false, type: "", item: null })}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-700 text-white transition"
+                onClick={() => {
+                  if (modal.type === "delete") {
+                    deletePassword(modal.item.id);
+                  } else if (modal.type === "edit") {
+                    editPassword(modal.item);
+                  }
+                  setModal({ open: false, type: "", item: null });
+                }}
+              >
+                {modal.type === "delete" ? "Delete" : "Edit"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <ToastContainer
         position="top-right"
         autoClose={2000}
@@ -245,7 +298,7 @@ const Manager = () => {
                       <div className="flex items-center gap-2 justify-center">
                         <button
                           type="button"
-                          onClick={() => deletePassword(item.id)}
+                          onClick={() => handleDeletePrompt(item)}
                           className="text-violet-400 hover:text-violet-200 active:text-violet-300 active:scale-90 transition-colors"
                           title="Delete"
                         >
@@ -253,6 +306,7 @@ const Manager = () => {
                         </button>
                         <button
                           type="button"
+                          onClick={() => handleEditPrompt(item)}
                           className="text-violet-400 hover:text-violet-200 active:text-violet-300 active:scale-90 transition-colors"
                           title="Edit"
                         >
