@@ -13,10 +13,9 @@ const Manager = () => {
   const [modal, setModal] = useState({ open: false, type: "", item: null });
 
   useEffect(() => {
-    let passwords = localStorage.getItem("KVAULT_PASSWORDS");
-    if (passwords) {
-      setPasswordArray(JSON.parse(passwords));
-    }
+    fetch("http://localhost:3000/passwords")
+      .then((res) => res.json())
+      .then((data) => setPasswordArray(data));
   }, []);
 
   const handleCopy = (text) => {

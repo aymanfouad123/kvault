@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const { MongoClient } = require("mongodb");
 const bodyparser = require("body-parser");
 const { ObjectId } = require("mongodb");
+var cors = require("cors");
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ const dbName = "kvault";
 const app = express();
 const port = 3000;
 app.use(bodyparser.json());
+app.use(cors());
 
 app.get("/passwords", async (req, res) => {
   const db = client.db(dbName);
@@ -40,4 +42,5 @@ app.delete("/passwords/:id", async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Example app listening on port - http://localhost:${port}`);
+  console.log(`Check records at - http://localhost:${port}/passwords`);
 });
