@@ -14,6 +14,7 @@ A simple self-hosted password manager built with React, Tailwind, Express, and M
 
 ---
 
-KVault Screenshot
+KVault Demo
 
-![KVault Screenshot](/src/assets/homescreenshot.png)
+https://github.com/user-attachments/assets/5a4dce91-cc78-411b-b63f-14609a1105c7
+
