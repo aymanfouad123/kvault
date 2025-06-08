@@ -17,6 +17,8 @@ const port = 3000;
 app.use(bodyparser.json());
 app.use(cors());
 
+client.connect();
+
 app.get("/passwords", async (req, res) => {
   const db = client.db(dbName);
   const collection = db.collection("passwords");

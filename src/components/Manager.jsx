@@ -13,10 +13,28 @@ const Manager = () => {
   const [modal, setModal] = useState({ open: false, type: "", item: null });
 
   useEffect(() => {
-    fetch("http://localhost:3000/passwords")
-      .then((res) => res.json())
-      .then((data) => setPasswordArray(data));
+    getPasswords();
   }, []);
+
+  const getPasswords = async () => {
+    const res = await fetch("http://localhost:3000/passwords");
+    const data = await res.json();
+    setPasswordArray(data);
+  };
+
+  const addPassword = async (password) => {
+    await fetch("http://localhost:3000/passwords", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(password),
+    });
+    getPasswords(); // Refresh list
+  };
+
+  const delPassword = async (id) => {
+    await fetch(`http://localhost:3000/passwords/${id}`, { method: "DELETE" });
+    getPasswords();
+  };
 
   const handleCopy = (text) => {
     toast.success("Copied to Clipboard!", {
