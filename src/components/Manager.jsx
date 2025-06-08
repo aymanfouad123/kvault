@@ -12,16 +12,18 @@ const Manager = () => {
   const [visiblePasswords, setVisiblePasswords] = useState({});
   const [modal, setModal] = useState({ open: false, type: "", item: null });
 
-  useEffect(() => {
-    getPasswords();
-  }, []);
-
+  // Fetch all passwords from backend
   const getPasswords = async () => {
     const res = await fetch("http://localhost:3000/passwords");
     const data = await res.json();
     setPasswordArray(data);
   };
 
+  useEffect(() => {
+    getPasswords();
+  }, []);
+
+  // Add a password
   const addPassword = async (password) => {
     await fetch("http://localhost:3000/passwords", {
       method: "POST",
@@ -29,11 +31,26 @@ const Manager = () => {
       body: JSON.stringify(password),
     });
     getPasswords(); // Refresh list
+    toast.success("Password Saved Successfully!", {
+      position: "top-right",
+      autoClose: 2000,
+      theme: "colored",
+      transition: Bounce,
+    });
   };
 
-  const delPassword = async (id) => {
+  // Delete a password
+  const deletePassword = async (id, suppressToast = false) => {
     await fetch(`http://localhost:3000/passwords/${id}`, { method: "DELETE" });
     getPasswords();
+    if (!suppressToast) {
+      toast.success("Password Deleted!", {
+        position: "top-right",
+        autoClose: 2000,
+        theme: "colored",
+        transition: Bounce,
+      });
+    }
   };
 
   const handleCopy = (text) => {
@@ -58,6 +75,7 @@ const Manager = () => {
     setModal({ open: true, type: "edit", item });
   };
 
+  // Handle form submission
   const savePass = () => {
     if (!form.site.trim() || !form.username.trim() || !form.password.trim()) {
       alert("All fields are required!");
@@ -85,46 +103,12 @@ const Manager = () => {
       return;
     }
 
-    setPasswordArray([...passwordArray, { ...form, id: uuidv4() }]);
-    localStorage.setItem(
-      "KVAULT_PASSWORDS",
-      JSON.stringify([...passwordArray, { ...form, id: uuidv4() }])
-    );
+    addPassword(form);
     setForm({ site: "", username: "", password: "" });
-    toast.success("Password Saved Successfully!", {
-      position: "top-right",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-      transition: Bounce,
-    });
-  };
-
-  const deletePassword = (id, suppressToast = false) => {
-    setPasswordArray(passwordArray.filter((item) => item.id !== id));
-    localStorage.setItem(
-      "KVAULT_PASSWORDS",
-      JSON.stringify(passwordArray.filter((item) => item.id !== id))
-    );
-    if (!suppressToast) {
-      toast.success("Password Deleted!", {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        transition: Bounce,
-      });
-    }
   };
 
   const editPassword = (item) => {
-    deletePassword(item.id, true);
+    deletePassword(item._id, true); // suppress toast
     setForm({
       site: item.site,
       username: item.username,
