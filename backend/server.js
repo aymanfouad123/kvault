@@ -34,12 +34,33 @@ app.post("/passwords", async (req, res) => {
 });
 
 app.delete("/passwords/:id", async (req, res) => {
-  const db = client.db(dbName);
-  const collection = db.collection("passwords");
-  const result = await collection.deleteOne({
-    _id: new ObjectId(req.params.id),
-  });
-  res.json(result);
+  try {
+    const db = client.db(dbName);
+    const collection = db.collection("passwords");
+
+    console.log("Received delete request for ID:", req.params.id);
+
+    // Validate ObjectId format
+    if (!ObjectId.isValid(req.params.id)) {
+      console.log("Invalid ObjectId format:", req.params.id);
+      return res.status(400).json({ error: "Invalid ID format" });
+    }
+
+    const result = await collection.deleteOne({
+      _id: new ObjectId(req.params.id),
+    });
+
+    console.log("Delete operation result:", result);
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "Password not found" });
+    }
+
+    res.json({ success: true, deletedCount: result.deletedCount });
+  } catch (error) {
+    console.error("Delete error:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.listen(port, () => {

@@ -41,12 +41,32 @@ const Manager = () => {
 
   // Delete a password
   const deletePassword = async (id, suppressToast = false) => {
-    await fetch(`http://localhost:3000/passwords/${id}`, { method: "DELETE" });
-    getPasswords();
-    if (!suppressToast) {
-      toast.success("Password Deleted!", {
+    try {
+      const response = await fetch(`http://localhost:3000/passwords/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("Delete result:", result);
+
+      getPasswords();
+      if (!suppressToast) {
+        toast.success("Password Deleted!", {
+          position: "top-right",
+          autoClose: 2000,
+          theme: "colored",
+          transition: Bounce,
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting password:", error);
+      toast.error(`Failed to delete password: ${error.message}`, {
         position: "top-right",
-        autoClose: 2000,
+        autoClose: 3000,
         theme: "colored",
         transition: Bounce,
       });
@@ -68,6 +88,9 @@ const Manager = () => {
   };
 
   const handleDeletePrompt = (item) => {
+    console.log("handleDeletePrompt - Full item:", item);
+    console.log("handleDeletePrompt - Item ID:", item._id);
+    console.log("handleDeletePrompt - ID type:", typeof item._id);
     setModal({ open: true, type: "delete", item });
   };
 
@@ -151,7 +174,7 @@ const Manager = () => {
                 className="px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-700 text-white transition"
                 onClick={() => {
                   if (modal.type === "delete") {
-                    deletePassword(modal.item.id);
+                    deletePassword(modal.item._id);
                   } else if (modal.type === "edit") {
                     editPassword(modal.item);
                   }
